@@ -10,7 +10,7 @@ import (
 
 //Generic function for processing GET requests from various CS2 APIs.
 func GetAPI(url string, headers map[string]string) ([]byte, error) {
-	client := &http.Client {
+	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
 
@@ -37,7 +37,7 @@ func GetAPI(url string, headers map[string]string) ([]byte, error) {
 		return nil, err
 	}
 
-	//Error response handling to prevent silent marshalling errors
+	//Error response handling to prevent silent marshalling errors.
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return nil, fmt.Errorf("HTTP %d from %s: %s", response.StatusCode, url, body)
 	}

@@ -9,25 +9,26 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-//Response of json data
+//Mapped JSON response from CSfloat.
 type CsFloatStats struct {
-    MedianTradeTime     int `json:"median_trade_time"`
-    TotalAvoidedTrades  int `json:"total_avoided_trades"`
-    TotalFailedTrades   int `json:"total_failed_trades"`
-    TotalTrades         int `json:"total_trades"`
-    TotalVerifiedTrades int `json:"total_verified_trades"`
+	MedianTradeTime     int `json:"median_trade_time"`
+	TotalAvoidedTrades  int `json:"total_avoided_trades"`
+	TotalFailedTrades   int `json:"total_failed_trades"`
+	TotalTrades         int `json:"total_trades"`
+	TotalVerifiedTrades int `json:"total_verified_trades"`
 }
 
-//Fulfilling Endpoint functions
-
+//CSFloat's endpoint, requiring an API key.
 type CSFloatEndpoint struct {
 	APIKey string
 }
 
+//Identifier for the map of retrieved data.
 func (e *CSFloatEndpoint) Name() string {
 	return "csfloat"
 }
 
+//Invokes and handles CSfloat stats.
 func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
 	response, err := GetCsFloatStats(steamID, e.APIKey)
 	if err != nil {
@@ -36,10 +37,10 @@ func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
 	return response, nil
 }
 
-//GETs user CSFloat trade stats, which in turn will be funneled into the aggregator.
-func GetCsFloatStats(steamID uint64, apiKey string) (*CsFloatStats, error){
+//GETs and parses user CSFloat trade stats.
+func GetCsFloatStats(steamID uint64, apiKey string) (*CsFloatStats, error) {
 	url := "https://csfloat.com/api/v1/users/" + strconv.FormatUint(steamID, 10) + "/stall"
-	body, err := utils.GetAPI(url, map[string]string {
+	body, err := utils.GetAPI(url, map[string]string{
 		"Authorization": apiKey,
 	})
 	if err != nil {
@@ -50,7 +51,7 @@ func GetCsFloatStats(steamID uint64, apiKey string) (*CsFloatStats, error){
 	if userStats == "" {
 		return nil, fmt.Errorf("User statistics not found (likely not an active seller?)")
 	}
-	
+
 	var results CsFloatStats
 	if err := json.Unmarshal([]byte(userStats), &results); err != nil {
 		return nil, err

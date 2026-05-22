@@ -18,10 +18,13 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found, relying on environment variables")
 	}
+
+	//Registered endpoints
 	registry := NewRegistry()
 	registry.Register(&endpoints.CSFloatEndpoint{APIKey: os.Getenv("CSFLOAT_API_KEY")})
 	registry.Register(&endpoints.ReverseWatchEndpoint{})
 
+	//Looping through target IDs, forming aggregated profiles for each.
 	for _, id := range steamIDs {
 		if err := CreateProfile(id, registry); err != nil {
 			log.Printf("%v", err)

@@ -11,19 +11,23 @@ import (
 	"github.com/jgr0sz/whoistrader/core"
 )
 
+//Wrapper struct to consolidate our endpoints.
 type Registry struct {
 	endpoints []core.Endpoint
 }
 
+//Constructor for our Registry.
 func NewRegistry() *Registry {
 	return &Registry{}
 }
 
+//Adds a new Endpoint to the registry.
 func (r *Registry) Register(e core.Endpoint) {
 	r.endpoints = append(r.endpoints, e)
 }
 
-//We extract data from our registered endpoints and their fetch functions into the user profile.
+//Main aggregator logic that concurrently extracts Endpoints and their functions, retrieving responses/errors.
+//Mutexes are used here in order to ensure race conditions between goroutines accessing a shared struct don't occur.
 func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
 	profile := &core.AggregatedTraderProfile{
 		SteamID: strconv.FormatUint(steamID, 10),
@@ -54,6 +58,7 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 	return profile, nil
 }
 
+//Wrapper function to invoke the aggregator, handle errors, and output JSON aggregator response/s.
 func CreateProfile(steamID uint64, registry *Registry) error {
 	profile, err := AggregateTraderProfile(steamID, registry)
 	if err != nil {
