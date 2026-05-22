@@ -21,18 +21,18 @@ func (r *Registry) Register(e core.Endpoint) {
 }
 
 //We extract data from our registered endpoints and their fetch functions into the user profile.
-func AggregateTraderProfile(steam_id uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
+func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
 	profile := &core.AggregatedTraderProfile{
-		SteamID: strconv.FormatUint(steam_id, 10),
-		Data: make(map[string]any),
+		SteamID: strconv.FormatUint(steamID, 10),
+		Data:    make(map[string]any),
 	}
-	
+
 	var mutex sync.Mutex
 	var wg sync.WaitGroup
 
 	for _, endpoint := range registry.endpoints {
 		wg.Go(func() {
-			result, err := endpoint.Fetch(steam_id)
+			result, err := endpoint.Fetch(steamID)
 			mutex.Lock()
 			defer mutex.Unlock()
 
