@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 	"sync"
 
@@ -49,4 +52,16 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 		return nil, fmt.Errorf("All APIs failed to fetch a response: %v", profile.Errors)
 	}
 	return profile, nil
+}
+
+func CreateProfile(steamID uint64, registry *Registry) error {
+	profile, err := AggregateTraderProfile(steamID, registry)
+	if err != nil {
+		return fmt.Errorf("Aggregation failed for steamID %d: %v\n", steamID, err)
+	}
+
+	if len(profile.Errors) > 0 {
+		log.Printf("Some sources failed for steamID %d: %v", steamID, err)
+	}
+	return json.NewEncoder(os.Stdout).Encode(profile)
 }
