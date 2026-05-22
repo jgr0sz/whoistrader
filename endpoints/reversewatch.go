@@ -8,8 +8,9 @@ import (
 )
 
 type ReverseWatchInfo struct {
-	SteamID     string `json:"steam_id"`
-	HasReversed bool   `json:"has_reversed"`
+	SteamID               string `json:"steam_id"`
+	HasReversed           bool   `json:"has_reversed"`
+	LastReversalTimestamp int64  `json:"last_reversal_timestamp,omitempty"`
 }
 
 type ReverseWatchEndpoint struct {
