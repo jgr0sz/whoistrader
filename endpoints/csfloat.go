@@ -32,7 +32,7 @@ func (e *CSFloatEndpoint) Name() string {
 func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
 	response, err := GetCsFloatStats(steamID, e.APIKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return response, nil
 }
