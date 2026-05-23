@@ -27,7 +27,7 @@ func (e *ReverseWatchEndpoint) Name() string {
 func (e *ReverseWatchEndpoint) Fetch(steamID uint64) (any, error) {
 	response, err := GetReverseWatchInfo(steamID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return response, nil
 }
