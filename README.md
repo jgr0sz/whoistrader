@@ -1,5 +1,5 @@
 # whoistrader
-Service that aims to detail more about CS2 traders and their reliability. 
+CS2 trader profiler, built by players for players. Nobody likes scammers and reversers.
 
 In a nutshell, it takes multiple APIs from CS2 marketplaces, reversal DBs, and Steam itself and aggregates them into one fat API response that represents the "profile" of a user. 
 
