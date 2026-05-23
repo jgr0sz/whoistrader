@@ -62,11 +62,11 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 func CreateProfile(steamID uint64, registry *Registry) error {
 	profile, err := AggregateTraderProfile(steamID, registry)
 	if err != nil {
-		return fmt.Errorf("Aggregation failed for steamID %d: %v\n", steamID, err)
+		return fmt.Errorf("Aggregation failed for steamID %d: %v\n", steamID, profile.Errors)
 	}
 
 	if len(profile.Errors) > 0 {
-		log.Printf("Some sources failed for steamID %d: %v", steamID, err)
+		log.Printf("Some sources failed for steamID %d: %v\n\n", steamID, profile.Errors)
 	}
-	return json.NewEncoder(os.Stdout).Encode(profile)
+	return json.NewEncoder(os.Stdout).Encode(profile) 
 }
