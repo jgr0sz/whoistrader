@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"sync"
 
@@ -66,7 +67,7 @@ func GetSteamPlayerSummary(steamID uint64, apiKey string) (*SteamPlayerSummary, 
 		return nil, err
 	}
 
-	playerSummary := gjson.GetBytes(body, "players.0").Raw
+	playerSummary := gjson.GetBytes(body, "response.players.0").Raw
 	if playerSummary == "" {
 		return nil, fmt.Errorf("player summary info not found")
 	}
@@ -164,6 +165,10 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 
 	if info.PlayerSummary == nil && info.PlayerBans == nil && info.SteamLevel == nil {
 		return nil, fmt.Errorf("all steam endpoints failed: %v", errors)
+	}
+
+	if len(errors) > 0 {
+		log.Printf("Some sources failed for steamID %d: %v\n\n", steamID, errors)
 	}
 	return &info, nil
 }
