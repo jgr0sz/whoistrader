@@ -1,9 +1,7 @@
 # whoistrader
-CS2 trader profiler, built by players for players. Nobody likes scammers and reversers.
+CS2 trader profiler, made by a player who isn't fond of the amount of scammers/reversers in the community.
 
-In a nutshell, it takes multiple APIs from CS2 marketplaces, reversal DBs, and Steam itself and aggregates them into one fat API response that represents the "profile" of a user. 
-
-This project itself is not meant to explicitly qualify users as trustworthy or not; it instead provides information for potential buyers/sellers to access to make a decision.
+In a nutshell, it takes various sources of trader information (reversal databases, marketplace APIs, Steam's web API) and builds a profile around them, displaying relevant information such as reversals, Steam-related bans, and statistics/standings on major marketplaces.
 
 ## Usage 
 - In the root folder, create an `.env` file to house API keys for the platforms that require them.
@@ -29,3 +27,4 @@ Any and all pull requests adding features or new platforms are welcome. [This](e
 - Integrating as many reliable APIs and data sources as possible
 - [ ] Exposing service responses over an HTTP server
 - [ ] Discord bot integration (in a separate repo)
+- [ ] Adding analysis capabilities based on trader data (Bayesian average score or similar)
