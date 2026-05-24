@@ -135,7 +135,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 		mutex.Lock()
 		defer mutex.Unlock()
 		if err != nil {
-			errors = append(errors, fmt.Sprintf("summary: %v", err))
+			errors = append(errors, fmt.Sprintf("summary: %s", err))
 			return
 		}
 		info.PlayerSummary = summary
@@ -146,7 +146,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
         mutex.Lock()
         defer mutex.Unlock()
         if err != nil {
-            errors = append(errors, fmt.Sprintf("bans: %v", err))
+            errors = append(errors, fmt.Sprintf("bans: %s", err))
             return
         }
         info.PlayerBans = bans
@@ -157,7 +157,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
         mutex.Lock()
         defer mutex.Unlock()
         if err != nil {
-            errors = append(errors, fmt.Sprintf("level: %v", err))
+            errors = append(errors, fmt.Sprintf("level: %s", err))
             return
         }
         info.SteamLevel = level
@@ -165,7 +165,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 	wg.Wait()
 
 	if info.PlayerSummary == nil && info.PlayerBans == nil && info.SteamLevel == nil {
-		return nil, fmt.Errorf("all steam endpoints failed: %v", errors)
+		return nil, fmt.Errorf("all steam endpoints failed: %s", strings.Join(errors, "; "))
 	}
 
 	if len(errors) > 0 {
