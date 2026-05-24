@@ -16,7 +16,7 @@ func GetAPI(url string, headers map[string]string) ([]byte, error) {
 
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		log.Printf("Malformed request to %s: %s", url, err)
+		log.Printf("Malformed request: %s", err)
 		return nil, err
 	}
 
@@ -39,7 +39,7 @@ func GetAPI(url string, headers map[string]string) ([]byte, error) {
 
 	//Error response handling to prevent silent marshalling errors.
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return nil, fmt.Errorf("HTTP %d from %s: %s", response.StatusCode, url, body)
+		return nil, fmt.Errorf("HTTP %d", response.StatusCode)
 	}
 	return body, nil
 }

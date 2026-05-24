@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/jgr0sz/whoistrader/utils"
@@ -168,7 +169,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 	}
 
 	if len(errors) > 0 {
-		log.Printf("Some sources failed for steamID %d: %v\n\n", steamID, errors)
+		log.Printf("Some sources failed for steamID %d: %s\n\n", steamID, strings.Join(errors, "; "))
 	}
 	return &info, nil
 }

@@ -29,7 +29,7 @@ func main() {
 	//Looping through target IDs, forming aggregated profiles for each.
 	for _, id := range steamIDs {
 		if err := CreateProfile(id, registry); err != nil {
-			log.Printf("%v", err)
+			log.Printf("Failed to create profile for steamID %d: %s\n", id, err.Error())
 		}
 		fmt.Print("\n")
 	}
