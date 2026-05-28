@@ -9,13 +9,19 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-//Mapped JSON response from CSfloat.
+//Mapped JSON response from CSFloat.
 type CsFloatStats struct {
 	MedianTradeTime     int `json:"median_trade_time"`
 	TotalAvoidedTrades  int `json:"total_avoided_trades"`
 	TotalFailedTrades   int `json:"total_failed_trades"`
 	TotalTrades         int `json:"total_trades"`
 	TotalVerifiedTrades int `json:"total_verified_trades"`
+}
+
+//Mapped Error response from CSFloat.
+type CsFloatErr struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 //CSFloat's endpoint, requiring an API key.
@@ -44,6 +50,10 @@ func GetCsFloatStats(steamID uint64, apiKey string) (*CsFloatStats, error) {
 		"Authorization": apiKey,
 	})
 	if err != nil {
+		var csErr CsFloatErr
+		if json.Unmarshal(body, &csErr) == nil && csErr.Message == "record not found" {
+			return nil, fmt.Errorf("user has no CSFloat stall")
+		}
 		return nil, err
 	}
 
