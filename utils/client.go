@@ -39,7 +39,7 @@ func GetAPI(url string, headers map[string]string) ([]byte, error) {
 
 	//Error response handling to prevent silent marshalling errors.
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return nil, fmt.Errorf("HTTP %d", response.StatusCode)
+		return body, fmt.Errorf("HTTP %d", response.StatusCode)
 	}
 	return body, nil
 }

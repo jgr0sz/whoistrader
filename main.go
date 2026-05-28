@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
 	"os"
 
@@ -10,12 +10,6 @@ import (
 )
 
 func main() {
-	//Random IDs as an example (for now)
-	steamIDs := []uint64{
-		76561198332541485, //Sample ID
-		76561199250221928, //ID of a user that has reversed, private CSFloat stall
-	}
-
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found, relying on environment variables")
 	}
@@ -26,11 +20,8 @@ func main() {
 	registry.Register(&endpoints.ReverseWatchEndpoint{})
 	registry.Register(&endpoints.SteamInfoEndpoints{APIKey: os.Getenv("STEAM_API_KEY")})
 
-	//Looping through target IDs, forming aggregated profiles for each.
-	for _, id := range steamIDs {
-		if err := CreateProfile(id, registry); err != nil {
-			log.Printf("Failed to create profile for steamID %d: %s\n", id, err.Error())
-		}
-		fmt.Print("\n")
+	cmd := buildCLI(registry)
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
+		log.Fatal(err)
 	}
 }
