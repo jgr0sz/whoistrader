@@ -14,7 +14,7 @@ STEAM_API_KEY=API_KEY
 You can generate a Steam Web API key at https://steamcommunity.com/dev/apikey. Enter anything you'd like in the domain name field and click "Register".
 
 ### Command-Line Interface
-After compiling the source code with `go build .`, run the binary with `profile <steamID> [steamID...]`, adding one or more IDs. See `profile help` for options.
+After compiling the source code with `go build .`, run the binary with `profile <steamID> [steamID...]`, adding one or more IDs and/or options. See `profile help` for options.
 
 
 ## Contributing

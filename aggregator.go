@@ -60,7 +60,7 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 }
 
 //Wrapper function to invoke the aggregator, handle errors, and output JSON aggregator response/s.
-func CreateProfile(steamID uint64, registry *Registry) error {
+func CreateProfile(steamID uint64, registry *Registry, savepath string) error {
 	profile, err := AggregateTraderProfile(steamID, registry)
 	if err != nil {
 		return fmt.Errorf("Aggregation failed for steamID %d: %s\n", steamID, err)
@@ -73,6 +73,21 @@ func CreateProfile(steamID uint64, registry *Registry) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal profile for steamID %d: %s", steamID, err)
 	}
-	fmt.Fprintln(os.Stdout, string(output))
+
+	//Default: will return JSON response to standard output
+	if savepath == "" {
+		fmt.Fprintln(os.Stdout, string(output))
+	} else {
+		//Checks for existing savepath, makes file otherwise and writes to it
+		file, err := os.OpenFile(savepath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+		if err != nil {
+			return fmt.Errorf("failed to open file %s: %s", savepath, err)
+		}
+		defer file.Close()
+
+		if _, err := fmt.Fprintln(file, string(output)); err != nil {
+			return fmt.Errorf("failed to write profile to %s: %s", savepath, err)
+		}
+	}
 	return nil
 }
