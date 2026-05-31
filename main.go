@@ -16,7 +16,7 @@ func main() {
 
 	//Registered endpoints
 	registry := NewRegistry()
-	registry.Register(&endpoints.CSFloatEndpoint{APIKey: os.Getenv("CSFLOAT_API_KEY")})
+	registry.Register(&endpoints.CSFloatEndpoint{})
 	registry.Register(&endpoints.ReverseWatchEndpoint{})
 	registry.Register(&endpoints.SteamInfoEndpoints{APIKey: os.Getenv("STEAM_API_KEY")})
 

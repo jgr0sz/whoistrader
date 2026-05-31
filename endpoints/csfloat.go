@@ -24,9 +24,8 @@ type CsFloatErr struct {
 	Message string `json:"message"`
 }
 
-//CSFloat's endpoint, requiring an API key.
+//CSFloat's endpoint.
 type CSFloatEndpoint struct {
-	APIKey string
 }
 
 //Identifier for the map of retrieved data.
@@ -36,7 +35,7 @@ func (e *CSFloatEndpoint) Name() string {
 
 //Invokes and handles CSfloat stats.
 func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
-	response, err := GetCsFloatStats(steamID, e.APIKey)
+	response, err := GetCsFloatStats(steamID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,11 +43,9 @@ func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
 }
 
 //GETs and parses user CSFloat trade stats.
-func GetCsFloatStats(steamID uint64, apiKey string) (*CsFloatStats, error) {
+func GetCsFloatStats(steamID uint64) (*CsFloatStats, error) {
 	url := "https://csfloat.com/api/v1/users/" + strconv.FormatUint(steamID, 10) + "/stall"
-	body, err := utils.GetAPI(url, map[string]string{
-		"Authorization": apiKey,
-	})
+	body, err := utils.GetAPI(url, nil)
 	if err != nil {
 		var csErr CsFloatErr
 		if json.Unmarshal(body, &csErr) == nil && csErr.Message == "record not found" {

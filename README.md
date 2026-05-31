@@ -8,10 +8,8 @@ In a nutshell, it takes various sources of trader information (reversal database
 ### Before running
 In the root folder, create an `.env` file to house API keys for the platforms that require them. For the time being, the structure is as follows: 
 <pre>
-CSFLOAT_API_KEY=API_KEY
 STEAM_API_KEY=API_KEY 
 </pre>
-You can generate a CSFloat API key at https://csfloat.com/profile > Developers > New Key.
 
 You can generate a Steam Web API key at https://steamcommunity.com/dev/apikey. Enter anything you'd like in the domain name field and click "Register".
 
