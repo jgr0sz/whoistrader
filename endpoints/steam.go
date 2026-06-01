@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -61,9 +62,9 @@ func (e *SteamInfoEndpoints) Name() string {
 }
 
 //GETs and parses player summary info.
-func GetSteamPlayerSummary(steamID uint64, apiKey string) (*SteamPlayerSummary, error) {
+func GetSteamPlayerSummary(ctx context.Context, steamID uint64, apiKey string) (*SteamPlayerSummary, error) {
 	url :=  STEAM_API_DOMAIN + "ISteamUser/GetPlayerSummaries/v002/?key=" + apiKey + "&steamids=" + strconv.FormatUint(steamID, 10)
-	body, err := utils.GetAPI(url, nil)
+	body, err := utils.GetAPI(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -81,9 +82,9 @@ func GetSteamPlayerSummary(steamID uint64, apiKey string) (*SteamPlayerSummary, 
 }
 
 //GETs and parses player ban info.
-func GetSteamPlayerBans(steamID uint64, apiKey string) (*SteamPlayerBans, error) {
+func GetSteamPlayerBans(ctx context.Context, steamID uint64, apiKey string) (*SteamPlayerBans, error) {
 	url := STEAM_API_DOMAIN + "/ISteamUser/GetPlayerBans/v1/?key=" + apiKey + "&steamids=" + strconv.FormatUint(steamID, 10)
-	body, err := utils.GetAPI(url, nil)
+	body, err := utils.GetAPI(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -101,9 +102,9 @@ func GetSteamPlayerBans(steamID uint64, apiKey string) (*SteamPlayerBans, error)
 }
 
 //GETs and parses player level.
-func GetSteamLevel(steamID uint64, apiKey string) (*SteamLevel, error){
+func GetSteamLevel(ctx context.Context, steamID uint64, apiKey string) (*SteamLevel, error){
 	url := STEAM_API_DOMAIN + "IPlayerService/GetSteamLevel/v1/?key=" + apiKey + "&steamid=" + strconv.FormatUint(steamID, 10)
-	body, err := utils.GetAPI(url, nil)
+	body, err := utils.GetAPI(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +123,7 @@ func GetSteamLevel(steamID uint64, apiKey string) (*SteamLevel, error){
 
 //Concurrently invokes and handles each of Steam web API calls, consolidating them into a SteamInfo struct.
 //This is passed onto the main aggregator along with the information collected from the rest of the API calls in files in /endpoints/.
-func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
+func (e *SteamInfoEndpoints) Fetch(ctx context.Context, steamID uint64) (any, error) {
 	var (
 		mutex sync.Mutex
 		wg sync.WaitGroup
@@ -131,7 +132,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 	)
 
 	wg.Go(func() {
-		summary, err := GetSteamPlayerSummary(steamID, e.APIKey)
+		summary, err := GetSteamPlayerSummary(ctx, steamID, e.APIKey)
 		mutex.Lock()
 		defer mutex.Unlock()
 		if err != nil {
@@ -142,7 +143,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
 	})
 
 	wg.Go(func() {
-        bans, err := GetSteamPlayerBans(steamID, e.APIKey)
+        bans, err := GetSteamPlayerBans(ctx, steamID, e.APIKey)
         mutex.Lock()
         defer mutex.Unlock()
         if err != nil {
@@ -153,7 +154,7 @@ func (e *SteamInfoEndpoints) Fetch(steamID uint64) (any, error) {
     })
 
     wg.Go(func() {
-        level, err := GetSteamLevel(steamID, e.APIKey)
+        level, err := GetSteamLevel(ctx, steamID, e.APIKey)
         mutex.Lock()
         defer mutex.Unlock()
         if err != nil {

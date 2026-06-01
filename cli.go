@@ -38,7 +38,7 @@ func buildCLI(registry *Registry) *cli.Command {
 							return fmt.Errorf("Invalid Steam ID: %s", arg)
 						}
 
-						if err := CreateProfile(steamID, registry, cmd.Root().String("output")); err != nil {
+						if err := CreateProfile(ctx, steamID, registry, cmd.Root().String("output")); err != nil {
 							log.Printf("Failed to create profile for steamID %d: %s\n", steamID, err)
 						}
 					}

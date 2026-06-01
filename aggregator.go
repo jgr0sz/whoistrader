@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -29,7 +30,7 @@ func (r *Registry) Register(e core.Endpoint) {
 
 //Main aggregator logic that concurrently extracts Endpoints and their functions, retrieving responses/errors.
 //Mutexes are used here in order to ensure race conditions between goroutines accessing a shared struct don't occur.
-func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
+func AggregateTraderProfile(ctx context.Context, steamID uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
 	profile := &core.AggregatedTraderProfile{
 		SteamID: strconv.FormatUint(steamID, 10),
 		Data:    make(map[string]any),
@@ -40,7 +41,7 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 
 	for _, endpoint := range registry.endpoints {
 		wg.Go(func() {
-			result, err := endpoint.Fetch(steamID)
+			result, err := endpoint.Fetch(ctx, steamID)
 			mutex.Lock()
 			defer mutex.Unlock()
 
@@ -60,8 +61,8 @@ func AggregateTraderProfile(steamID uint64, registry *Registry) (*core.Aggregate
 }
 
 //Wrapper function to invoke the aggregator, handle errors, and output JSON aggregator response/s.
-func CreateProfile(steamID uint64, registry *Registry, savepath string) error {
-	profile, err := AggregateTraderProfile(steamID, registry)
+func CreateProfile(ctx context.Context, steamID uint64, registry *Registry, savepath string) error {
+	profile, err := AggregateTraderProfile(ctx, steamID, registry)
 	if err != nil {
 		return fmt.Errorf("Aggregation failed for steamID %d: %s\n", steamID, err)
 	}

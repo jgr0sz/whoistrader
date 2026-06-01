@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"context"
 	"encoding/json"
 	"strconv"
 
@@ -24,8 +25,8 @@ func (e *ReverseWatchEndpoint) Name() string {
 }
 
 //Invokes and handles reverse.watch results.
-func (e *ReverseWatchEndpoint) Fetch(steamID uint64) (any, error) {
-	response, err := GetReverseWatchInfo(steamID)
+func (e *ReverseWatchEndpoint) Fetch(ctx context.Context, steamID uint64) (any, error) {
+	response, err := GetReverseWatchInfo(ctx, steamID)
 	if err != nil {
 		return nil, err
 	}
@@ -33,9 +34,9 @@ func (e *ReverseWatchEndpoint) Fetch(steamID uint64) (any, error) {
 }
 
 //GETs and parses reverse.watch results.
-func GetReverseWatchInfo(steamID uint64) (*ReverseWatchInfo, error) {
+func GetReverseWatchInfo(ctx context.Context, steamID uint64) (*ReverseWatchInfo, error) {
 	url := "https://reverse.watch/api/v1/users/" + strconv.FormatUint(steamID, 10)
-	body, err := utils.GetAPI(url, nil)
+	body, err := utils.GetAPI(ctx, url, nil)
 	if err != nil {
 		return nil, err
 	}

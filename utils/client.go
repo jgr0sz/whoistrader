@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -9,12 +10,12 @@ import (
 )
 
 //Generic function for processing GET requests from various CS2 APIs.
-func GetAPI(url string, headers map[string]string) ([]byte, error) {
+func GetAPI(ctx context.Context, url string, headers map[string]string) ([]byte, error) {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
 
-	request, err := http.NewRequest(http.MethodGet, url, nil)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		log.Printf("Malformed request: %s", err)
 		return nil, err

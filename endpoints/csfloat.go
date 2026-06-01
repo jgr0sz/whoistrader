@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -34,8 +35,8 @@ func (e *CSFloatEndpoint) Name() string {
 }
 
 //Invokes and handles CSfloat stats.
-func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
-	response, err := GetCsFloatStats(steamID)
+func (e *CSFloatEndpoint) Fetch(ctx context.Context, steamID uint64) (any, error) {
+	response, err := GetCsFloatStats(ctx, steamID)
 	if err != nil {
 		return nil, err
 	}
@@ -43,9 +44,9 @@ func (e *CSFloatEndpoint) Fetch(steamID uint64) (any, error) {
 }
 
 //GETs and parses user CSFloat trade stats.
-func GetCsFloatStats(steamID uint64) (*CsFloatStats, error) {
+func GetCsFloatStats(ctx context.Context, steamID uint64) (*CsFloatStats, error) {
 	url := "https://csfloat.com/api/v1/users/" + strconv.FormatUint(steamID, 10) + "/stall"
-	body, err := utils.GetAPI(url, nil)
+	body, err := utils.GetAPI(ctx, url, nil)
 	if err != nil {
 		var csErr CsFloatErr
 		if json.Unmarshal(body, &csErr) == nil && csErr.Message == "record not found" {

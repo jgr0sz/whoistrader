@@ -1,8 +1,10 @@
 package core
 
+import "context"
+
 //Interface for API endpoints.
 type Endpoint interface {
-	Fetch(steamID uint64) (any, error)
+	Fetch(ctx context.Context, steamID uint64) (any, error)
 	Name() string
 }
 
