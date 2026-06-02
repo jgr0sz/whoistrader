@@ -6,11 +6,12 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/jgr0sz/whoistrader/core"
 	"github.com/urfave/cli/v3"
 )
 
 // Primary CLI command for whoistrader, taking in multiple steamIDs. Requires a pre-made registry of endpoints.
-func buildCLI(registry *Registry) *cli.Command {
+func buildCLI(registry *core.Registry) *cli.Command {
 	return &cli.Command{
 		Name:  "whoistrader",
 		Usage: "CS2 trader profiler to vet players",
@@ -38,7 +39,7 @@ func buildCLI(registry *Registry) *cli.Command {
 							return fmt.Errorf("Invalid Steam ID: %s", arg)
 						}
 
-						if err := CreateProfile(ctx, steamID, registry, cmd.Root().String("output")); err != nil {
+						if err := core.CreateProfile(ctx, steamID, registry, cmd.Root().String("output")); err != nil {
 							log.Printf("Failed to create profile for steamID %d: %s\n", steamID, err)
 						}
 					}

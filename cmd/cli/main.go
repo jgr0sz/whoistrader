@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/jgr0sz/whoistrader/core"
 	"github.com/jgr0sz/whoistrader/endpoints"
 	"github.com/joho/godotenv"
 )
@@ -15,7 +16,7 @@ func main() {
 	}
 
 	//Registered endpoints
-	registry := NewRegistry()
+	registry := core.NewRegistry()
 	registry.Register(&endpoints.CSFloatEndpoint{})
 	registry.Register(&endpoints.ReverseWatchEndpoint{})
 	registry.Register(&endpoints.SteamInfoEndpoints{APIKey: os.Getenv("STEAM_API_KEY")})

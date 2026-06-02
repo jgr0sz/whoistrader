@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"context"
@@ -9,13 +9,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/jgr0sz/whoistrader/core"
 )
 
 //Wrapper struct to consolidate our endpoints.
 type Registry struct {
-	endpoints []core.Endpoint
+	endpoints []Endpoint
 }
 
 //Constructor for our Registry.
@@ -24,14 +22,14 @@ func NewRegistry() *Registry {
 }
 
 //Adds a new Endpoint to the registry.
-func (r *Registry) Register(e core.Endpoint) {
+func (r *Registry) Register(e Endpoint) {
 	r.endpoints = append(r.endpoints, e)
 }
 
 //Main aggregator logic that concurrently extracts Endpoints and their functions, retrieving responses/errors.
 //Mutexes are used here in order to ensure race conditions between goroutines accessing a shared struct don't occur.
-func AggregateTraderProfile(ctx context.Context, steamID uint64, registry *Registry) (*core.AggregatedTraderProfile, error) {
-	profile := &core.AggregatedTraderProfile{
+func AggregateTraderProfile(ctx context.Context, steamID uint64, registry *Registry) (*AggregatedTraderProfile, error) {
+	profile := &AggregatedTraderProfile{
 		SteamID: strconv.FormatUint(steamID, 10),
 		Data:    make(map[string]any),
 	}
